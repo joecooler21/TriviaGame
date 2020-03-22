@@ -12,31 +12,29 @@ var trivia = [
         correctAnswer: "answer3"
     },
     {
-        question: "This 1992 dialogue-heavy film boasts an ensemble cast and the catchphrase 'Always Be Closing'",
+        question: "This 1992 dialogue-heavy film boasts an ensemble cast and the catch phrase 'Always Be Closing'",
 
         answerList:["Reservoir Dogs", "Goodfellas", "Tombstone", "Glengarry Glen Ross"],
         correctAnswer: "answer4"
     },
     {
-        question: "Question 4",
+        question: "Billy Bob Thorton is almost unrecognizable in this 1996 rural drama",
 
-        answerList:["Answer 1", "Answer 2", "Answer 3", "Answer 4"],
+        answerList:["Sling Blade", "Fargo", "A Simple Plan", "The Apostle"],
+        correctAnswer: "answer1"
     },
 ]
 
+
+var currentQuestion = 0;
 var timer = document.getElementById("timer");
 
 var count = 10;
 var score = 0;
 
-setInterval(function(){
-    if (count === 0)
-    count = 10;
-    timer.textContent = count;
-    count--;
-}, 1000);
+var gameTimer = setGameTimer();
 
-var currentQuestion = 0;
+
 
 loadQuestion(trivia[currentQuestion]);
 
@@ -47,22 +45,45 @@ for (let i = 0; i < optionList.length; i++){
         if (optionList[i].id === trivia[currentQuestion].correctAnswer) {
             
             setTimeout(function(){
+                showAnswer(true);
                 score++;
-                document.getElementById("score").textContent = "Score: " + score;
                 currentQuestion++;
+
                 loadQuestion(trivia[currentQuestion]);
-                document.activeElement = null;
                 clearOptions();
+                count = 10;
                 
 
-            }, 3000);
+            }, 2000);
+
+            gameTimer = setGameTimer();
             return;
+            
+        } else {
+            setTimeout(function() {
+                showAnswer(false);
+                currentQuestion++;
+                loadQuestion(trivia[currentQuestion]);
+                clearOptions;
+                count = 10;
+            }, 2000);
+
+            gameTimer = setGameTimer();
+
         }
 
     });
 }
 
 function loadQuestion(triviaObj) {
+
+    if (currentQuestion > (trivia.length - 1)) {
+        clearInterval(gameTimer);
+        timer.textContent = "Game Over";
+        document.getElementById("score").textContent = "You answered " + score + " out of " + trivia.length + " correctly";
+        return;
+    }
+
     document.getElementById("question").textContent = triviaObj.question;
     var optionText = document.getElementsByClassName("custom-control-label");
     for (let i = 0; i < optionText.length; i++) {
@@ -71,8 +92,31 @@ function loadQuestion(triviaObj) {
 }
 
 function clearOptions() {
+    document.activeElement = null;
     for (let i = 0; i < optionList.length; i++)
     {
         optionList[i].checked = false;
     }
+}
+
+function setGameTimer () {
+    return (setInterval(function(){
+        if (count === 0)
+        count = 10;
+        timer.textContent = count;
+        count--;
+    }, 1000));
+}
+
+// show answer screen based on user choice
+function showAnswer(answer){
+    clearInterval(gameTimer);
+
+    if (answer) {
+        timer.textContent = "You chose...wisely";
+    } else {
+        timer.textContent = "You chose...poorly";
+    }
+    
+
 }
