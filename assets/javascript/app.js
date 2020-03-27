@@ -25,16 +25,14 @@ var trivia = [
     },
 ]
 
-
 var currentQuestion = 0;
 var timer = document.getElementById("timer");
 
-var count = 10;
+var count = 2;
 var score = 0;
 
+timer.textContent = count;
 var gameTimer = setGameTimer();
-
-
 
 loadQuestion(trivia[currentQuestion]);
 
@@ -44,24 +42,18 @@ for (let i = 0; i < optionList.length; i++) {
     optionList[i].addEventListener('click', function () {
 
         if (optionList[i].id === trivia[currentQuestion].correctAnswer) {
-            showAnswer(true);
+
             score++;
             currentQuestion++;
             clearInterval(gameTimer);
-
+            showAnswer(true);
 
             setTimeout(function () {
-
-
                 gameTimer = setGameTimer();
                 loadQuestion(trivia[currentQuestion]);
                 clearOptions();
-                count = 10;
-
-
-
+                count = 2;
             }, 3000);
-
 
             return;
 
@@ -72,12 +64,9 @@ for (let i = 0; i < optionList.length; i++) {
             setTimeout(function () {
                 loadQuestion(trivia[currentQuestion]);
                 clearOptions();
-                count = 10;
+                count = 2;
                 gameTimer = setGameTimer();
             }, 3000);
-
-
-
         }
 
     });
@@ -93,6 +82,7 @@ function loadQuestion(triviaObj) {
     }
     document.getElementById("question").textContent = triviaObj.question;
     var optionText = document.getElementsByClassName("custom-control-label");
+
     for (let i = 0; i < optionText.length; i++) {
         optionText[i].style.fontSize = "1rem";
         optionText[i].textContent = triviaObj.answerList[i];
@@ -107,11 +97,39 @@ function clearOptions() {
 }
 
 function setGameTimer() {
+    var state = true;
+
+    if (currentQuestion >= trivia.length) {
+        return;
+    }
+
     return (setInterval(function () {
-        if (count === 0)
-            count = 10;
-        timer.textContent = count;
-        count--;
+        if (currentQuestion >= trivia.length) {
+            state = false;
+        }
+
+        if (count === 0) {
+            count = 2;
+            currentQuestion++;
+            if (currentQuestion >= trivia.length) {
+                timer.textContent = "Game Over";
+                document.getElementById(getCorrect(currentQuestion-1)).style.fontSize = "2rem";
+                document.getElementById("score").textContent = "You answered " + score + " out of " + trivia.length + " correctly";
+                return;
+            }
+            state = false;
+            timer.textContent = "Time's Up!";
+            document.getElementById(getCorrect(currentQuestion)).style.fontSize = "2rem";
+            setTimeout(function () {
+                loadQuestion(trivia[currentQuestion]);
+                state = true;
+            }, 3000);
+        }
+        if (state) {
+            timer.textContent = count;
+            count--;
+            console.log(currentQuestion + " " + trivia.length);
+        }
     }, 1000));
 }
 
@@ -124,15 +142,13 @@ function showAnswer(answer) {
     } else {
         timer.textContent = "Incorrect";
         //make the right answer font larger
-        document.getElementById(getCorrect()).style.fontSize = "2rem";
+        document.getElementById(getCorrect(currentQuestion)).style.fontSize = "2rem";
     }
-
-
 }
 
 //get id of current questions correct answer label
-function getCorrect() {
-    var id = document.getElementById(trivia[currentQuestion].correctAnswer).id;
+function getCorrect(index) {
+    var id = document.getElementById(trivia[index].correctAnswer).id;
 
     if (id === "answer1")
         id = "option1";
@@ -144,7 +160,4 @@ function getCorrect() {
         id = "option4";
 
     return (id);
-
-
-
 }
