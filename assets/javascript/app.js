@@ -27,9 +27,12 @@ var trivia = [
 
 var currentQuestion = 0;
 var timer = document.getElementById("timer");
+var resetButton = document.querySelector("button");
 
-var count = 2;
+var count = 5;
 var score = 0;
+
+hideResetButton();
 
 timer.textContent = count;
 var gameTimer = setGameTimer();
@@ -52,7 +55,7 @@ for (let i = 0; i < optionList.length; i++) {
                 gameTimer = setGameTimer();
                 loadQuestion(trivia[currentQuestion]);
                 clearOptions();
-                count = 2;
+                count = 5;
             }, 3000);
 
             return;
@@ -64,7 +67,7 @@ for (let i = 0; i < optionList.length; i++) {
             setTimeout(function () {
                 loadQuestion(trivia[currentQuestion]);
                 clearOptions();
-                count = 2;
+                count = 5;
                 gameTimer = setGameTimer();
             }, 3000);
         }
@@ -72,12 +75,34 @@ for (let i = 0; i < optionList.length; i++) {
     });
 }
 
+function showResetButton() {
+
+    resetButton.style.visibility = "visible";
+
+    resetButton.addEventListener("click", function() {
+        currentQuestion = 0;
+        score = 0;
+        count = 5;
+        document.getElementById("score").textContent = "";
+        gameTimer = setGameTimer();
+        loadQuestion(trivia[currentQuestion]);
+        
+    });
+}
+
+function hideResetButton(){
+    var resetButton = document.querySelector("button");
+    resetButton.style.visibility = "hidden";
+}
 function loadQuestion(triviaObj) {
+
+    hideResetButton();
 
     if (currentQuestion > (trivia.length - 1)) {
         clearInterval(gameTimer);
         timer.textContent = "Game Over";
         document.getElementById("score").textContent = "You answered " + score + " out of " + trivia.length + " correctly";
+        showResetButton();
         return;
     }
     document.getElementById("question").textContent = triviaObj.question;
@@ -97,6 +122,8 @@ function clearOptions() {
 }
 
 function setGameTimer() {
+    clearInterval(gameTimer);
+
     var state = true;
 
     if (currentQuestion >= trivia.length) {
@@ -109,26 +136,28 @@ function setGameTimer() {
         }
 
         if (count === 0) {
-            count = 2;
+            count = 5;
             currentQuestion++;
             if (currentQuestion >= trivia.length) {
+                clearInterval(gameTimer);
                 timer.textContent = "Game Over";
                 document.getElementById(getCorrect(currentQuestion-1)).style.fontSize = "2rem";
                 document.getElementById("score").textContent = "You answered " + score + " out of " + trivia.length + " correctly";
+                showResetButton();
                 return;
             }
             state = false;
             timer.textContent = "Time's Up!";
-            document.getElementById(getCorrect(currentQuestion)).style.fontSize = "2rem";
+            document.getElementById(getCorrect(currentQuestion-1)).style.fontSize = "2rem";
             setTimeout(function () {
                 loadQuestion(trivia[currentQuestion]);
                 state = true;
             }, 3000);
         }
         if (state) {
+            console.log(count);
             timer.textContent = count;
             count--;
-            console.log(currentQuestion + " " + trivia.length);
         }
     }, 1000));
 }
