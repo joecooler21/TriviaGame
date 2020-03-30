@@ -36,7 +36,7 @@ var currentQuestion = 0;
 var timer = document.getElementById("timer");
 var resetButton = document.querySelector("button");
 
-var count = 5;
+var count = 10;
 var score = 0;
 
 hideResetButton();
@@ -62,7 +62,7 @@ for (let i = 0; i < optionList.length; i++) {
                 gameTimer = setGameTimer();
                 loadQuestion(trivia[currentQuestion]);
                 clearOptions();
-                count = 5;
+                count = 10;
             }, 3000);
 
             return;
@@ -74,7 +74,7 @@ for (let i = 0; i < optionList.length; i++) {
             setTimeout(function () {
                 loadQuestion(trivia[currentQuestion]);
                 clearOptions();
-                count = 5;
+                count = 10;
                 gameTimer = setGameTimer();
             }, 3000);
         }
@@ -89,7 +89,7 @@ function showResetButton() {
     resetButton.addEventListener("click", function() {
         currentQuestion = 0;
         score = 0;
-        count = 5;
+        count = 10;
         document.getElementById("score").textContent = "";
         gameTimer = setGameTimer();
         loadQuestion(trivia[currentQuestion]);
@@ -143,7 +143,7 @@ function setGameTimer() {
         }
 
         if (count === 0) {
-            count = 5;
+            count = 10;
             currentQuestion++;
             if (currentQuestion >= trivia.length) {
                 clearInterval(gameTimer);
