@@ -23,6 +23,13 @@ var trivia = [
         answerList: ["Sling Blade", "Fargo", "A Simple Plan", "The Apostle"],
         correctAnswer: "answer1"
     },
+
+    {
+        question: "This 1995 crime mystery took the film world by storm with it's brilliant twist ending and had everyone asking -- 'Who is Keyzer Soze?'",
+        answerList: ["Unforgiven", "Mystic River", "Seven", "The Usual Suspects"],
+        correctAnswer: "answer4"
+
+    },
 ]
 
 var currentQuestion = 0;
